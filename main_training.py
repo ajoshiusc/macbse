@@ -44,7 +44,7 @@ class BSEDataset(Dataset):
 #mask_files = (glob('/deneb_disk/macaque_atlas_data/mac_bse_data/data/site-uwo/sub-*/ses-001/anat/sub-*_ses-001_run-1_T1w_mask.nii.gz'))
 
 mask_files = (glob('/scratch1/ajoshi/mac_bse_data/data/site-uwo/sub-*/ses-001/anat/sub-*_ses-001_run-1_T1w_mask.nii.gz'))
-mask_files = (glob('/deneb_disk/macaque_atlas_data/mac_bse_data/data/site-uwo/sub-*/ses-001/anat/sub-*_ses-001_run-1_T1w_mask.nii.gz'))
+#mask_files = (glob('/deneb_disk/macaque_atlas_data/mac_bse_data/data/site-uwo/sub-*/ses-001/anat/sub-*_ses-001_run-1_T1w_mask.nii.gz'))
 
 image_files = [m[:-12]+'.nii.gz' for m in mask_files ]
 
