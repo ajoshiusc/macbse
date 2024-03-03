@@ -44,6 +44,7 @@ class BSEDataset(Dataset):
 #mask_files = (glob('/deneb_disk/macaque_atlas_data/mac_bse_data/data/site-uwo/sub-*/ses-001/anat/sub-*_ses-001_run-1_T1w_mask.nii.gz'))
 
 mask_files = (glob('/scratch1/ajoshi/mac_bse_data/data/site-uwo/sub-*/ses-001/anat/sub-*_ses-001_run-1_T1w_mask.nii.gz'))
+mask_files = (glob('/deneb_disk/macaque_atlas_data/mac_bse_data/data/site-uwo/sub-*/ses-001/anat/sub-*_ses-001_run-1_T1w_mask.nii.gz'))
 
 image_files = [m[:-12]+'.nii.gz' for m in mask_files ]
 
@@ -103,10 +104,10 @@ train_transforms = Compose([
             shear_range=(.1,.1,.1,.1,.1,.1),
             padding_mode=("zeros","reflection"),
         ),
-    RandBiasFieldd(keys="image",prob=0.5, coeff_range=(-1,1), degree=5),
+    RandBiasFieldd(keys="image",prob=0.5, coeff_range=(0,.5)),
     RandAdjustContrastd(keys="image", prob=0.5, invert_image=True,gamma=(0.5,2.0)),
-    RandGaussianNoised(keys="image",prob=0.5, mean=0.0, std=30),
-    RandGaussianSmoothd(keys="image",prob=0.5),
+    RandGaussianNoised(keys="image",prob=0.5, mean=0.0, std=50),
+    #RandGaussianSmoothd(keys="image",prob=0.5,sigma_x=(0.5,1.5), sigma_y=(0.5,1.5), sigma_z=(0.5,1.5)),
 ])
 
 
@@ -128,6 +129,26 @@ val_ds = CacheDataset(data=val_files, transform=val_transforms, cache_rate=0.5, 
 val_loader = DataLoader(val_ds, batch_size=1, num_workers=10, collate_fn=pad_list_data_collate)
 
 batch = next(iter(train_loader))
+
+for j in range(2):
+    plt.subplot(121)
+    plt.imshow(batch['image'][j,0,:,32,:],cmap='gray',vmin=0,vmax=255)
+    plt.subplot(122)
+    plt.imshow(batch['mask'][j,0,:,32,:],cmap='gray',vmin=0,vmax=1)
+    plt.show()
+
+
+
+batch = next(iter(train_loader))
+
+for j in range(2):
+    plt.subplot(121)
+    plt.imshow(batch['image'][j,0,:,32,:],cmap='gray',vmin=0,vmax=255)
+    plt.subplot(122)
+    plt.imshow(batch['mask'][j,0,:,32,:],cmap='gray',vmin=0,vmax=1)
+    plt.show()
+
+
 
 i=0
 for batch in train_loader:
