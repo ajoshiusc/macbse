@@ -18,6 +18,7 @@ from monai.utils import set_determinism
 from glob import glob
 import random
 
+from monai.transforms import RandAdjustContrastd, RandGaussianNoised, RandGaussianSmoothd, HistogramNormalizeD
 # Set random seed for reproducibility
 set_determinism(seed=0)
 
@@ -66,7 +67,7 @@ print("total num files:", len(data_dicts))
 print("num training files:", len(train_files))
 print("num validation files:", len(val_files))
 
-from monai.transforms import Compose, Resized, RandBiasFieldd, ScaleIntensityd,LoadImaged, EnsureChannelFirstd, RandAffined, ToTensord,LoadImage,ToTensor,EnsureChannelFirstD,EnsureChannelFirst, Resize, RandBiasFieldd
+from monai.transforms import Compose,HistogramNormalizeD, Resized, RandBiasFieldd, ScaleIntensityd,LoadImaged, EnsureChannelFirstd, RandAffined, ToTensord,LoadImage,ToTensor,EnsureChannelFirstD,EnsureChannelFirst, Resize, RandBiasFieldd
 from monai.data import (
     CacheDataset,
     DataLoader,
@@ -82,7 +83,7 @@ keys = ["image", "mask"]
 train_transforms = Compose([
     LoadImaged(keys,image_only=True),
     EnsureChannelFirstd(keys),
-    ScaleIntensityd(keys="image", minv=0.0, maxv=1.0),
+    ScaleIntensityd(keys="image", minv=0.0, maxv=255.0),
     Resized(
             keys,
             spatial_size=(64, 64, 64),
@@ -100,18 +101,22 @@ train_transforms = Compose([
             padding_mode=("zeros","reflection"),
         ),
     RandBiasFieldd(keys="image",prob=0.5, coeff_range=(-1,1), degree=5),
+    RandAdjustContrastd(keys="image", prob=0.5, invert_image=True,gamma=(0.5,2.0)),
+    RandGaussianNoised(keys="image",prob=0.5, mean=0.0, std=30),
+    RandGaussianSmoothd(keys="image",prob=0.5),
 ])
 
 
 val_transforms = Compose([
     LoadImaged(keys,image_only=True),
     EnsureChannelFirstd(keys),
-    ScaleIntensityd(keys="image", minv=0.0, maxv=1.0),
+    ScaleIntensityd(keys="image", minv=0.0, maxv=255.0),
     Resized(
             keys,
             spatial_size=(64, 64, 64),
             mode='trilinear',
     ),
+    HistogramNormalizeD(keys="image", num_bins=255),
 ])
 
 train_ds = CacheDataset(data=train_files, transform=train_transforms, cache_rate=0.5, num_workers=4)
@@ -217,11 +222,11 @@ for epoch in range(num_epochs):
         formatted_datetime = current_datetime.strftime("%Y-%m-%d_%H-%M-%S")
 
         # Create a filename with the formatted date and time
-        filename = f"models/macbse_model_{formatted_datetime}_epoch_{epoch}.pth"
+        filename = f"models/macbse_aug_model_{formatted_datetime}_epoch_{epoch}.pth"
 
         # Save the trained model
         torch.save(model.state_dict(), filename)
-        filename = f"models/macbse_loss_{formatted_datetime}_epoch_{epoch}.npz"
+        filename = f"models/macbse_aug_loss_{formatted_datetime}_epoch_{epoch}.npz"
 
         np.savez(filename,val_loss_epoch=val_loss_epoch,train_loss_epoch=train_loss_epoch)
 

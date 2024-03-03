@@ -1,3 +1,9 @@
+*.nii
+*.nii.gz
+models/*.pth
+models/*.pt
+models/*.npz
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

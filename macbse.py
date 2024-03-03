@@ -11,7 +11,7 @@ from monai.losses import DiceLoss
 from torch.nn import MSELoss
 from monai.data import Dataset, DataLoader, partition_dataset
 
-from monai.transforms import Compose, ScaleIntensityd, LoadImaged, ToTensord,LoadImage,ToTensor,EnsureChannelFirstD,EnsureChannelFirstd, Resized, Resize
+from monai.transforms import Compose, HistogramNormalizeD, ScaleIntensityd, LoadImaged, ToTensord,LoadImage,ToTensor,EnsureChannelFirstD,EnsureChannelFirstd, Resized, Resize
 from monai.utils import set_determinism
 from glob import glob
 import random
