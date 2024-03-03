@@ -40,7 +40,7 @@ class BiasFieldCorrectionDataset(Dataset):
 #image_files = ['image1.nii.gz', 'image2.nii.gz']
 #mask_files = ['bias_field1.nii.gz', 'bias_field2.nii.gz']
 
-mask_files = (glob('../../mac_bse_data/data/site-uwo/sub-*/ses-001/anat/sub-*_ses-001_run-1_T1w_mask.nii.gz'))
+mask_files = (glob('/deneb_disk/macaque_atlas_data/mac_bse_data/data/site-uwo/sub-*/ses-001/anat/sub-*_ses-001_run-1_T1w_mask.nii.gz'))
 image_files = [m[:-12]+'.nii.gz' for m in mask_files ]
 
 print('*********************')
@@ -114,9 +114,9 @@ val_transforms = Compose([
     ),
 ])
 
-train_ds = CacheDataset(data=train_files, transform=train_transforms, cache_rate=1.0, num_workers=4)
-train_loader = DataLoader(train_ds, batch_size=4, num_workers=10, collate_fn=pad_list_data_collate)
-val_ds = CacheDataset(data=val_files, transform=val_transforms, cache_rate=1.0, num_workers=4)
+train_ds = CacheDataset(data=train_files, transform=train_transforms, cache_rate=0.5, num_workers=4)
+train_loader = DataLoader(train_ds, batch_size=16, num_workers=10, collate_fn=pad_list_data_collate)
+val_ds = CacheDataset(data=val_files, transform=val_transforms, cache_rate=0.5, num_workers=4)
 val_loader = DataLoader(val_ds, batch_size=1, num_workers=10, collate_fn=pad_list_data_collate)
 
 batch = next(iter(train_loader))
@@ -157,7 +157,7 @@ model = UNet(
     spatial_dims=spatial_dims,
     in_channels=1,  # Adjust based on your data
     out_channels=1, # Adjust based on your data
-    channels=(16, 64, 64, 128, 256),#(2,8,8,16,32),#(16, 64, 64, 128, 256),
+    channels=(2,8,8,16,32),#(16, 64, 64, 128, 256),
     strides=strides,
 ).to(device)
 optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
@@ -167,7 +167,7 @@ loss_function = MSELoss() # DiceLoss(sigmoid=True)
 
 # Training loop
 num_epochs = 20002
-save_interval = 500
+save_interval = 5
 
 train_loss_epoch = np.zeros(num_epochs)
 val_loss_epoch = np.zeros(num_epochs)
@@ -226,8 +226,4 @@ for epoch in range(num_epochs):
         np.savez(filename,val_loss_epoch=val_loss_epoch,train_loss_epoch=train_loss_epoch)
 
 print('Training is done!')
-
-
-
-
 
