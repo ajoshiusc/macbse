@@ -34,12 +34,12 @@ python main.py -i input.nii.gz -m model.pth -o skull.nii.gz --mask mask.nii.gz -
 ```
 
 
-** Notes: **
+**Notes:**
 
 This script assumes the input data is in NIfTI format.
 The model expects the input image to be preprocessed (e.g., scaled, resized) before feeding it to the network.
 Ensure the model architecture and training configuration are compatible with the provided script.
 
-** Disclaimer: **
+**Disclaimer:**
 
 This script is for educational purposes only and may not be suitable for clinical applications.
