@@ -1,4 +1,4 @@
-## Skull Extraction Tool (SET)
+## Skull Extraction Tool for Macaque (MACBSE)
 
 **Description:**
 
