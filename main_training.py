@@ -22,7 +22,7 @@ import random
 set_determinism(seed=0)
 
 # Define your dataset and data loader
-class BiasFieldCorrectionDataset(Dataset):
+class BSEDataset(Dataset):
     def __init__(self, image_files, mask_files, transform=None):
         self.image_files = image_files
         self.mask_files = mask_files
@@ -137,7 +137,7 @@ for batch in train_loader:
     #    plt.show()
 
 # Create dataset and data loader
-#dataset = BiasFieldCorrectionDataset(image_files, mask_files, transform=transforms)
+#dataset = BSEDataset(image_files, mask_files, transform=transforms)
 
 
 # Split the dataset into training and validation sets
@@ -167,7 +167,7 @@ loss_function = MSELoss() # DiceLoss(sigmoid=True)
 
 # Training loop
 num_epochs = 20002
-save_interval = 5
+save_interval = 500
 
 train_loss_epoch = np.zeros(num_epochs)
 val_loss_epoch = np.zeros(num_epochs)
@@ -217,11 +217,11 @@ for epoch in range(num_epochs):
         formatted_datetime = current_datetime.strftime("%Y-%m-%d_%H-%M-%S")
 
         # Create a filename with the formatted date and time
-        filename = f"models/bias_field_correction_model_{formatted_datetime}_epoch_{epoch}.pth"
+        filename = f"models/macbse_model_{formatted_datetime}_epoch_{epoch}.pth"
 
         # Save the trained model
         torch.save(model.state_dict(), filename)
-        filename = f"models/bias_field_correction_loss_{formatted_datetime}_epoch_{epoch}.npz"
+        filename = f"models/macbse_loss_{formatted_datetime}_epoch_{epoch}.npz"
 
         np.savez(filename,val_loss_epoch=val_loss_epoch,train_loss_epoch=train_loss_epoch)
 
