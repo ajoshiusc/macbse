@@ -11,7 +11,7 @@ import SimpleITK as sitk
 # Define paths
 bse_model = "models/bias_field_correction_model_2024-03-02_22-29-46_epoch_9000.pth"
 
-prefix = "/home/ajoshi/Downloads/temp/ONPRC18_LargeFOV_T1W_head"
+prefix = "NMT_v2.1_sym_05mm_brainsuite/NMT_v2.1_sym_05mm"
 #"data/sub-032196_ses-001_run-1_T1w_bst"
 mri = f"{prefix}.nii.gz"
 
@@ -31,7 +31,7 @@ reg_mat = f"{prefix}.airatlas.mat"
 
 
 
-macbse(mri, bseout, bse_model, maskfile, device="cuda")
+#macbse(mri, bseout, bse_model, maskfile, device="cuda")
 
 
 # use SImpleITK to perform bias field correction
