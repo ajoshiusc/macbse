@@ -51,7 +51,7 @@ echo ---- Running BrainSuite Cortical Surface Extraction Sequence ----
 #"${BrainSuiteBin}bse" $VERBOSE -i "${filename}" -o "${basename}.bse.$EXT" --mask "${basename}.mask.$EXT" $BSEOPTIONS
 #if [ $? -ne 0 ]; then echo "cortical extraction halted because bse failed to run or returned an error."; exit 1; fi;
 #"${BrainSuiteBin}bfc" $VERBOSE -i "${basename}.bse.$EXT" -o "${basename}.bfc.$EXT" $BFCOPTIONS $BFCFILES
-"${BrainSuiteBin}skullfinder" $VERBOSE -i "${basename}.$EXT" -o "${basename}.skull.label.$EXT" -s 
+"${BrainSuiteBin}skullfinder" $VERBOSE -i "${basename}.$EXT" -o "${basename}.skull.label.$EXT" -s ${basename} -m "${basename}.mask.$EXT"
 
 #if [ $? -ne 0 ]; then echo "cortical extraction halted because bfc failed to run or returned an error."; exit 1; fi;
 #"${BrainSuiteBin}pvc" $VERBOSE -i "${basename}.bfc.$EXT" -o "${basename}.pvc.label.$EXT" -f "${basename}.pvc.frac.$EXT" $PVCOPTIONS
