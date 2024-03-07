@@ -1,11 +1,8 @@
 
-
-from audioop import bias
+#!/usr/bin/env python
 import os
 import nibabel as nib
-from sympy import N
 from macbse import macbse
-from SimpleITK import N4BiasFieldCorrection
 
 import SimpleITK as sitk
 
@@ -17,7 +14,7 @@ bfcout = "test3.bfc.nii.gz"
 biasfield = "test3.bias.nii.gz"
 bse_model = 'models/bias_field_correction_model_2024-03-02_22-29-46_epoch_9000.pth'
 maskfile = "sub-032196_ses-001_run-1_T1w.mask.nii.gz"
-
+pvcfile = "sub-032196_ses-001_run-1_T1w.pvc.nii.gz"
 
 
 
@@ -34,20 +31,25 @@ inputImage = sitk.Cast(inputImage, sitk.sitkFloat32)
 maskImage = sitk.Cast(maskImage, sitk.sitkUInt8)
 
 # Apply the N4BiasFieldCorrection filter
-outputImage, bias_field = sitk.N4BiasFieldCorrection(inputImage, maskImage)
+corrector = sitk.N4BiasFieldCorrectionImageFilter()
+corrector.SetMaximumNumberOfIterations([50] * 3)
+corrector.SetConvergenceThreshold(1e-6)
+corrector.SetBiasFieldFullWidthAtHalfMaximum(0.15)
+
+# Execute the filter
+outputImage = corrector.Execute(inputImage, maskImage)
+log_bias_field = corrector.GetLogBiasFieldAsImage(inputImage)
+bias_field = sitk.Exp(log_bias_field)
 
 # Write the result
 sitk.WriteImage(outputImage, bfcout)
-
-# Write the bias field
-sitk.WriteImage(bias_field, biasfield)
-
+sitk.WriteImage(log_bias_field, biasfield)
 
 # do tissue classification in WM GM and CSF. Use FSL's FAST from the command line
 # fsl5.0-fast -t 1 -n 3 -g -o sub-032196_ses-001_run-1_T1w.bfc.nii.gz sub-032196_ses-001_run-1_T1w.bfc.nii.gz
 
 # do tissue classification in WM GM and CSF. Use FSL's FAST from the command line
-os.system(f"fast -t 1 -n 3 -g -o sub-032196_ses-001_run-1_T1w.bfc.nii.gz sub-032196_ses-001_run-1_T1w.bfc.nii.gz")
+os.system(f"fast -t 1 -n 3 -g -o {mri} {bfcout}")
 
 
 
@@ -66,9 +68,9 @@ csf = nib.load("sub-032196_ses-001_run-1_T1w.bfc_pve_0.nii.gz").get_fdata()
 
 # Threshold the tissue probability maps
 threshold = 0.5
-gm[gm < threshold] = 0
-wm[wm < threshold] = 0
-csf[csf < threshold] = 0
+#gm[gm < threshold] = 0
+#wm[wm < threshold] = 0
+#csf[csf < threshold] = 0
 
 # Generate isosurfaces
 verts_gm, faces_gm, _, _ = measure.marching_cubes(gm, level=0.5)

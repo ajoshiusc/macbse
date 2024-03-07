@@ -1,24 +1,27 @@
 import glob
-import nibabel as nib
 import numpy as np
-from os.path import isfile
 import datetime
 import nibabel as nib
 import matplotlib.pyplot as plt
-from nilearn import plotting
 import torch
-import monai
 from monai.networks.nets import UNet
-from monai.losses import DiceLoss
 from torch.nn import MSELoss
-from monai.data import Dataset, DataLoader, partition_dataset
-from monai.transforms.utility.dictionary import SqueezeDimd
-from monai.transforms import Compose, LoadImaged, SqueezeDim, SqueezeDimd, ToTensord, LoadImage, ToTensor, EnsureChannelFirstD, EnsureChannelFirst, Resize, RandBiasFieldd
+from monai.data import Dataset, DataLoader
+from monai.transforms import Compose, LoadImaged, RandBiasFieldd
 from monai.utils import set_determinism
 from glob import glob
 import random
 
-from monai.transforms import RandAdjustContrastd, RandGaussianNoised, RandGaussianSmoothd, HistogramNormalizeD
+from monai.transforms import Compose,HistogramNormalizeD, Resized, RandBiasFieldd, ScaleIntensityd,LoadImaged, EnsureChannelFirstd, RandAffined, RandBiasFieldd
+import pandas as pd
+from monai.data import (
+    CacheDataset,
+    DataLoader,
+    Dataset,
+    pad_list_data_collate,
+)
+
+from monai.transforms import RandAdjustContrastd, RandGaussianNoised, HistogramNormalizeD
 # Set random seed for reproducibility
 set_determinism(seed=0)
 
@@ -44,15 +47,18 @@ class BSEDataset(Dataset):
 #mask_files = (glob('/deneb_disk/macaque_atlas_data/mac_bse_data/data/site-uwo/sub-*/ses-001/anat/sub-*_ses-001_run-1_T1w_mask.nii.gz'))
 
 mask_files = (glob('/scratch1/ajoshi/mac_bse_data/data/site-uwo/sub-*/ses-001/anat/sub-*_ses-001_run-1_T1w_mask.nii.gz'))
-#mask_files = (glob('/deneb_disk/macaque_atlas_data/mac_bse_data/data/site-uwo/sub-*/ses-001/anat/sub-*_ses-001_run-1_T1w_mask.nii.gz'))
+mask_files = (glob('/deneb_disk/macaque_atlas_data/mac_bse_data/data/site-uwo/sub-*/ses-001/anat/sub-*_ses-001_run-1_T1w_mask.nii.gz'))
 
 image_files = [m[:-12]+'.nii.gz' for m in mask_files ]
 
-print('*********************')
-print(image_files)
-print(mask_files)
-print('*********************')
 
+df = pd.DataFrame({'Image Files': image_files, 'Mask Files': mask_files})
+print(df)
+
+# print a list of image files
+
+
+# 
 # Define transformations
 #transforms = Compose([LoadImaged(keys=['image', 'bias'],image_only=True), AddChanneld(keys=['image', 'bias']), ToTensord(keys=['image', 'bias'])])
 #transforms = Compose([LoadImage(image_only=True), Resize(), EnsureChannelFirst(), ToTensor()])
@@ -71,14 +77,6 @@ print("total num files:", len(data_dicts))
 print("num training files:", len(train_files))
 print("num validation files:", len(val_files))
 
-from monai.transforms import Compose,HistogramNormalizeD, Resized, RandBiasFieldd, ScaleIntensityd,LoadImaged, EnsureChannelFirstd, RandAffined, ToTensord,LoadImage,ToTensor,EnsureChannelFirstD,EnsureChannelFirst, Resize, RandBiasFieldd
-from monai.data import (
-    CacheDataset,
-    DataLoader,
-    Dataset,
-    pad_list_data_collate,
-    TestTimeAugmentation,
-)
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
