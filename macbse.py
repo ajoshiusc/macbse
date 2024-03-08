@@ -39,14 +39,8 @@ def macbse(
     spatial_dims = 3
     strides = (1, 1, 1, 1)
 
-    channels = (
-        2,
-        8,
-        8,
-        16,
-        32,
-    )
-    # (16, 64, 64, 128, 256) #tuple(map(int, last_subdirectory.split('_')[1][1:-1].split(',')))
+    channels = (16, 64, 64, 128, 256) #(2, 8, 8, 16, 32)
+    #  #tuple(map(int, last_subdirectory.split('_')[1][1:-1].split(',')))
 
     model = UNet(
         spatial_dims=spatial_dims,

@@ -24,8 +24,10 @@ pvcfile = f"{prefix}.pvc.frac.nii.gz"
 pvc_label_file = f"{prefix}.pvc.label.nii.gz"
 warped_air_atlas = f"{prefix}.warped.airatlas.nii.gz"
 warped_air_labels = f"{prefix}.hemi.label.nii.gz"
-air_atlas = "/home/ajoshi/Downloads/VERVET/brainsuite/VALiDATe12-airatlas/VALiDATe12-t1.airatlas.nii.gz"
-air_atlas_labels = "/home/ajoshi/Downloads/VERVET/brainsuite/VALiDATe12-airatlas/VALiDATe12-t1.airatlas.label.nii.gz"
+#air_atlas = "/home/ajoshi/Downloads/VERVET/brainsuite/VALiDATe12-airatlas/VALiDATe12-t1.airatlas.nii.gz"
+#air_atlas_labels = "/home/ajoshi/Downloads/VERVET/brainsuite/VALiDATe12-airatlas/VALiDATe12-t1.airatlas.label.nii.gz"
+air_atlas = "/deneb_disk/macaque_atlas_data/macaque_hemi_atlas/NMT_v2.1_sym_05mm.bfc.nii.gz"
+air_atlas_labels = "/deneb_disk/macaque_atlas_data/macaque_hemi_atlas/NMT_v2.1_sym_05mm.edit.hemi.label.nii.gz"
 
 reg_mat = f"{prefix}.airatlas.mat"
 

@@ -9,13 +9,16 @@ import SimpleITK as sitk
 
 
 # Define paths
-bse_model = "models/bias_field_correction_model_2024-03-02_22-29-46_epoch_9000.pth"
+bse_model = "/home/ajoshi/macbse_aug_model_2024-03-07_23-05-42_epoch_8000.pth" #"models/bias_field_correction_model_2024-03-02_22-29-46_epoch_9000.pth"
+bse_model = "/home/ajoshi/macbse_aug_model_2024-03-08_10-46-25_epoch_16500.pth" #"models/bias_field_correction_model_2024-03-02_22-29-46_epoch_9000.pth"
+
 
 prefix = "/home/ajoshi/Downloads/temp/ONPRC18_LargeFOV_T1W_head"
-#"data/sub-032196_ses-001_run-1_T1w_bst"
+#prefix = "data/sub-032197_ses-001_run-1_T1w"
+
 mri = f"{prefix}.nii.gz"
 
-bseout = f"{prefix}.bse.nii.gz"
+bseout = f"{prefix}.bse2.nii.gz"
 bfcout = f"{prefix}.bfc.nii.gz"
 biasfield = f"{prefix}.bias.nii.gz"
 maskfile = f"{prefix}.mask.nii.gz"
@@ -24,8 +27,10 @@ pvcfile = f"{prefix}.pvc.frac.nii.gz"
 pvc_label_file = f"{prefix}.pvc.label.nii.gz"
 warped_air_atlas = f"{prefix}.warped.airatlas.nii.gz"
 warped_air_labels = f"{prefix}.hemi.label.nii.gz"
-air_atlas = "/home/ajoshi/Downloads/VERVET/brainsuite/VALiDATe12-airatlas/VALiDATe12-t1.airatlas.nii.gz"
-air_atlas_labels = "/home/ajoshi/Downloads/VERVET/brainsuite/VALiDATe12-airatlas/VALiDATe12-t1.airatlas.label.nii.gz"
+air_atlas = "/deneb_disk/macaque_atlas_data/macaque_hemi_atlas/NMT_v2.1_sym_05mm.bfc.nii.gz"
+#"/home/ajoshi/Downloads/VERVET/brainsuite/VALiDATe12-airatlas/VALiDATe12-t1.airatlas.nii.gz"
+air_atlas_labels = "/deneb_disk/macaque_atlas_data/macaque_hemi_atlas/NMT_v2.1_sym_05mm.edit.hemi.label.nii.gz"
+#"/home/ajoshi/Downloads/VERVET/brainsuite/VALiDATe12-airatlas/VALiDATe12-t1.airatlas.label.nii.gz"
 
 reg_mat = f"{prefix}.airatlas.mat"
 
