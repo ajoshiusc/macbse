@@ -10,15 +10,15 @@ import SimpleITK as sitk
 
 # Define paths
 bse_model = "/home/ajoshi/macbse_aug_model_2024-03-07_23-05-42_epoch_8000.pth" #"models/bias_field_correction_model_2024-03-02_22-29-46_epoch_9000.pth"
-bse_model = "/home/ajoshi/macbse_aug_model_2024-03-08_10-46-25_epoch_16500.pth" #"models/bias_field_correction_model_2024-03-02_22-29-46_epoch_9000.pth"
+bse_model = "/home/ajoshi/macbse_aug_model_2024-03-08_20-18-33_epoch_500.pth" #macbse_aug_model_2024-03-08_10-46-25_epoch_16500.pth" #"models/bias_field_correction_model_2024-03-02_22-29-46_epoch_9000.pth"
 
 
-prefix = "/home/ajoshi/Downloads/temp/ONPRC18_LargeFOV_T1W_head"
-#prefix = "data/sub-032197_ses-001_run-1_T1w"
+#prefix = "/home/ajoshi/Downloads/temp/ONPRC18_LargeFOV_T1W_head"
+prefix = "/deneb_disk/macaque_atlas_data/site-uwmadison_part1/sub-1002/anat/sub-1002_T1w" #"data/sub-032196_ses-001_run-1_T1w"
 
 mri = f"{prefix}.nii.gz"
 
-bseout = f"{prefix}.bse2.nii.gz"
+bseout = f"{prefix}.bse.nii.gz"
 bfcout = f"{prefix}.bfc.nii.gz"
 biasfield = f"{prefix}.bias.nii.gz"
 maskfile = f"{prefix}.mask.nii.gz"
@@ -35,8 +35,8 @@ air_atlas_labels = "/deneb_disk/macaque_atlas_data/macaque_hemi_atlas/NMT_v2.1_s
 reg_mat = f"{prefix}.airatlas.mat"
 
 
-
-macbse(mri, bseout, bse_model, maskfile, device="cuda")
+if not os.path.exists(bseout):
+    macbse(mri, bseout, bse_model, maskfile, device="cuda")
 
 
 # use SImpleITK to perform bias field correction
@@ -104,6 +104,7 @@ nib.save(nib.Nifti1Image(np.uint8(pvc_frac), affine=affine), pvc_label_file)
 
 
 
+"""
 cmd = f"flirt -in {air_atlas} -ref {bfcout} -out {warped_air_atlas} -omat {reg_mat}"
 os.system(cmd)
 
@@ -115,13 +116,12 @@ v = np.uint8(v)
 nib.save(nib.Nifti1Image(v, affine=affine), warped_air_labels)
 
 
-
 v = nib.load(warped_air_labels).get_fdata()
 m = nib.load(maskfile).get_fdata()
 m[(v == 3) | (v == 4)] = 0
 m = m > 0.5
 nib.save(nib.Nifti1Image(255 * np.uint8(m), affine=affine), cerebrum_maskfile)
-
+"""
 
 
 cmd = f"./cortical_extraction_macaque.sh {prefix}"

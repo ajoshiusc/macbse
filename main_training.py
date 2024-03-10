@@ -3,7 +3,8 @@ import numpy as np
 import datetime
 import matplotlib.pyplot as plt
 import torch
-from monai.networks.nets import UNet
+from monai.losses import DiceLoss
+from monai.networks.nets import UNet #SwinUNETR, unet
 from torch.nn import MSELoss
 from monai.data import Dataset, DataLoader
 from monai.transforms import Compose, LoadImaged, RandBiasFieldd
@@ -161,12 +162,13 @@ train_loader = DataLoader(
     train_ds, batch_size=8, num_workers=10, collate_fn=pad_list_data_collate
 )
 val_ds = CacheDataset(
-    data=val_files, transform=val_transforms, cache_rate=1, num_workers=4
+    data=val_files, transform=val_transforms, cache_rate=1.0, num_workers=4
 )
 val_loader = DataLoader(
     val_ds, batch_size=1, num_workers=10, collate_fn=pad_list_data_collate
 )
 
+"""
 batch = next(iter(train_loader))
 
 for j in range(2):
@@ -186,6 +188,7 @@ for j in range(2):
     plt.imshow(batch["mask"][j, 0, :, 32, :], cmap="gray", vmin=0, vmax=1)
     plt.show()
 
+"""
 
 # Define the UNet model and optimizer
 
@@ -193,17 +196,27 @@ for j in range(2):
 spatial_dims = 3
 strides = (1, 1, 1, 1)
 
+"""
+model = SwinUNETR(
+    img_size=(64, 64, 64),
+    in_channels=1,
+    out_channels=1,
+    feature_size=48,
+    use_checkpoint=True,
+).to(device)
+"""
 model = UNet(
     spatial_dims=spatial_dims,
     in_channels=1,  # Adjust based on your data
     out_channels=1,  # Adjust based on your data
-    channels=(16, 64, 64, 128, 256), #(2, 8, 8, 16, 32),
+    channels= (2, 8, 8, 16, 32), #(16, 64, 64, 128, 256),
     strides=strides,
 ).to(device)
+
 optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
 
 # Define the Dice loss
-loss_function = MSELoss()  # DiceLoss(sigmoid=True)
+loss_function = DiceLoss(sigmoid=True, reduction="sum") #MSELoss()  # 
 
 # Training loop
 num_epochs = 20002

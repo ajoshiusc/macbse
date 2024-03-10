@@ -56,10 +56,10 @@ echo ---- Running BrainSuite Cortical Surface Extraction Sequence ----
 #if [ $? -ne 0 ]; then echo "cortical extraction halted because bfc failed to run or returned an error."; exit 1; fi;
 #"${BrainSuiteBin}pvc" $VERBOSE -i "${basename}.bfc.$EXT" -o "${basename}.pvc.label.$EXT" -f "${basename}.pvc.frac.$EXT" $PVCOPTIONS
 #if [ $? -ne 0 ]; then echo "cortical extraction halted because pvc failed to run or returned an error."; exit 1; fi;
-#"${BrainSuiteBin}cerebro" $VERBOSE --atlas "${ATLAS}" --atlaslabels "${ATLASLABELS}" -i "${basename}.bfc.$EXT" \
-#	-l "${basename}.hemi.label.$EXT" -m "${basename}.mask.$EXT" -o "${basename}.cerebrum.mask.$EXT" \
-#	-c 2 --air "${basename}.air" --warp "${basename}.warp" ${CEREBROOPTIONS}
-#if [ $? -ne 0 ]; then echo "cortical extraction halted because cerebro failed to run or returned an error."; exit 1; fi;
+"${BrainSuiteBin}cerebro" $VERBOSE --atlas "${ATLAS}" --atlaslabels "${ATLASLABELS}" -i "${basename}.bfc.$EXT" \
+	-l "${basename}.hemi.label.$EXT" -m "${basename}.mask.$EXT" -o "${basename}.cerebrum.mask.$EXT" \
+	-c 2 --air "${basename}.air" --warp "${basename}.warp" ${CEREBROOPTIONS}
+if [ $? -ne 0 ]; then echo "cortical extraction halted because cerebro failed to run or returned an error."; exit 1; fi;
 "${BrainSuiteBin}cortex" $VERBOSE -f "${basename}.pvc.frac.$EXT" -h "${basename}.hemi.label.$EXT" -o "${basename}.init.cortex.mask.$EXT" -a -w -p 50
 if [ $? -ne 0 ]; then echo "cortical extraction halted because cortex failed to run or returned an error."; exit 1; fi;
 "${BrainSuiteBin}scrubmask" $VERBOSE -i "${basename}.init.cortex.mask.$EXT" -o "${basename}.cortex.scrubbed.mask.$EXT" -f 0 -b 2
