@@ -39,7 +39,7 @@ def macbse(
     spatial_dims = 3
     strides = (1, 1, 1, 1)
 
-    channels = (16, 64, 64, 128, 256) #(2, 8, 8, 16, 32)
+    channels = (2, 8, 8, 16, 32), #(16, 64, 64, 128, 256) #(2, 8, 8, 16, 32)
     #  #tuple(map(int, last_subdirectory.split('_')[1][1:-1].split(',')))
 
     model = UNet(
@@ -56,7 +56,7 @@ def macbse(
         [
             LoadImaged(keys, image_only=True),
             EnsureChannelFirstd(keys),
-            ScaleIntensityd(keys="image", minv=0.0, maxv=1.0),
+            ScaleIntensityd(keys="image", minv=0.0, maxv=255.0),
             # the Unet has instance normalization, so this scaling won't make any difference.
             # But we keep it for now in case we choose to change the network.
             Resized(
