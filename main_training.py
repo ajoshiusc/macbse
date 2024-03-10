@@ -129,7 +129,7 @@ train_transforms = Compose(
             translate_range=(15, 15, 15),
             scale_range=(0.3, 0.3, 0.3),
             shear_range=(0.1, 0.1, 0.1, 0.1, 0.1, 0.1),
-            padding_mode=("zeros", "reflection"),
+            padding_mode=("zeros", "zeros"),
         ),
         RandBiasFieldd(keys="image", prob=0.5, coeff_range=(0, 0.5)),
         RandAdjustContrastd(
@@ -137,6 +137,8 @@ train_transforms = Compose(
         ),
         RandGaussianNoised(keys="image", prob=0.5, mean=0.0, std=50),
         # RandGaussianSmoothd(keys="image",prob=0.5,sigma_x=(0.5,1.5), sigma_y=(0.5,1.5), sigma_z=(0.5,1.5)),
+        #HistogramNormalizeD(keys="image", num_bins=255),
+
     ]
 )
 
@@ -151,7 +153,7 @@ val_transforms = Compose(
             spatial_size=(64, 64, 64),
             mode="trilinear",
         ),
-        HistogramNormalizeD(keys="image", num_bins=255),
+        #HistogramNormalizeD(keys="image", num_bins=255),
     ]
 )
 
@@ -168,10 +170,9 @@ val_loader = DataLoader(
     val_ds, batch_size=1, num_workers=10, collate_fn=pad_list_data_collate
 )
 
-"""
 batch = next(iter(train_loader))
 
-for j in range(2):
+for j in range(8):
     plt.subplot(121)
     plt.imshow(batch["image"][j, 0, :, 32, :], cmap="gray", vmin=0, vmax=255)
     plt.subplot(122)
@@ -179,16 +180,15 @@ for j in range(2):
     plt.show()
 
 
-batch = next(iter(train_loader))
+batch = next(iter(val_loader))
 
-for j in range(2):
+for j in range(1):
     plt.subplot(121)
     plt.imshow(batch["image"][j, 0, :, 32, :], cmap="gray", vmin=0, vmax=255)
     plt.subplot(122)
     plt.imshow(batch["mask"][j, 0, :, 32, :], cmap="gray", vmin=0, vmax=1)
     plt.show()
 
-"""
 
 # Define the UNet model and optimizer
 
