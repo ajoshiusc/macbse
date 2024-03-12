@@ -118,7 +118,7 @@ train_transforms = Compose(
         Resized(
             keys,
             spatial_size=(64, 64, 64),
-            mode="trilinear",
+            mode=("trilinear","nearest"),
         ),
         RandAffined(
             keys,
@@ -130,6 +130,7 @@ train_transforms = Compose(
             scale_range=(0.3, 0.3, 0.3),
             shear_range=(0.1, 0.1, 0.1, 0.1, 0.1, 0.1),
             padding_mode=("zeros", "zeros"),
+            mode=("trilinear","nearest"),
         ),
         RandBiasFieldd(keys="image", prob=0.5, coeff_range=(0, 0.5)),
         RandAdjustContrastd(

@@ -11,10 +11,11 @@ import SimpleITK as sitk
 # Define paths
 bse_model = "/home/ajoshi/macbse_aug_model_2024-03-07_23-05-42_epoch_8000.pth" #"models/bias_field_correction_model_2024-03-02_22-29-46_epoch_9000.pth"
 bse_model = "/home/ajoshi/macbse_aug_model_2024-03-08_20-18-33_epoch_500.pth" #macbse_aug_model_2024-03-08_10-46-25_epoch_16500.pth" #"models/bias_field_correction_model_2024-03-02_22-29-46_epoch_9000.pth"
-
+bse_model = "/home/ajoshi/macbse_aug_model_2024-03-10_18-52-55_epoch_20000.pth"
 
 #prefix = "/home/ajoshi/Downloads/temp/ONPRC18_LargeFOV_T1W_head"
-prefix = "/deneb_disk/macaque_atlas_data/site-uwmadison_part1/sub-1002/anat/sub-1002_T1w" #"data/sub-032196_ses-001_run-1_T1w"
+prefix = "data/sub-032196_ses-001_run-1_T1w"
+#"/deneb_disk/macaque_atlas_data/site-uwmadison_part1/sub-1002/anat/sub-1002_T1w" #
 
 mri = f"{prefix}.nii.gz"
 
