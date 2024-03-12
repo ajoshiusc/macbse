@@ -34,9 +34,61 @@ def laplace_beltrami(mesh):
 
     return laplacian
 
+
+def get_edges(faces):
+    """ Get the edges of a mesh given its faces
+    Args:
+        faces: list of faces of the mesh
+    Returns:
+        edges: list of edges of the mesh
+    """
+    edges = []
+
+    for face in faces:
+        i, j, k = face
+        edges.append((i, j))
+        edges.append((j, k))
+        edges.append((k, i))
+
+
+    edges = np.array(edges)
+    edges = np.sort(edges, axis=1)
+    #edges = np.unique(edges, axis=0)
+
+    return edges
+
+
+def get_boundary_edges(faces):
+    """ Get the boundary edges of a mesh given its faces
+    Args:
+        faces: list of faces of the mesh
+    Returns:
+        boundary_edges: list of boundary edges of the mesh
+    """
+
+    if len(faces) == 0:
+        return np.array([])
+    
+    edges = get_edges(faces)
+    
+    # find edges that are only present once in the list
+
+    unique_edges, edge_counts = np.unique(edges,axis=0,return_counts=True)
+
+    boundary_edges = unique_edges[edge_counts == 1]
+    #edge_counts = np.bincount(edges.flatten())
+
+
+    #boundary_edges = edges[edge_counts == 1]
+
+    return boundary_edges
+
+
 # Read mesh file
 mesh = readdfs("/home/ajoshi/Desktop/tube.dfs")
 #meshio.read("mesh_file.obj")
+
+boundary_edges = get_boundary_edges(mesh.faces)
 
 # Compute Laplace-Beltrami operator
 L = laplace_beltrami(mesh)
@@ -58,6 +110,7 @@ magnitude = first_eigenvector #np.linalg.norm(first_eigenvector, axis=1)
 fig = plt.figure(figsize=plt.figaspect(0.5))
 ax = fig.add_subplot(111, projection='3d')
 ax.plot_trisurf(mesh.vertices[:, 0], mesh.vertices[:, 1], mesh.vertices[:, 2], triangles=mesh.faces, cmap='viridis', alpha=0.5)
+
 
 for i, c in enumerate(np.linspace(np.min(magnitude), np.max(magnitude), 10)):
 
@@ -83,20 +136,21 @@ for i, c in enumerate(np.linspace(np.min(magnitude), np.max(magnitude), 10)):
 
 
     # find the boundary edges
-    boundary_edges = []
-    for f in faces:
-        edge1 = f[[0,1]]
-        edge2 = f[[1,2]]
-        edge3 = f[[2,0]]
-        
-        if sum(magnitude_patch[edge1]>c) == 1:
-            boundary_edges.append(edge1)
-        if sum(magnitude_patch[edge2]>c) == 1:
-            boundary_edges.append(edge2)
-        if sum(magnitude_patch[edge3]>c) == 1:
-            boundary_edges.append(edge3)
-    
-    boundary_edges = np.array(boundary_edges)
+    #boundary_edges = []
+    #for f in faces:
+    #    edge1 = f[[0,1]]
+    #    edge2 = f[[1,2]]
+    #    edge3 = f[[2,0]]
+    #    
+    #    if sum(magnitude_patch[edge1]>c) == 1:
+    #        boundary_edges.append(edge1)
+    #    if sum(magnitude_patch[edge2]>c) == 1:
+    #        boundary_edges.append(edge2)
+    #    if sum(magnitude_patch[edge3]>c) == 1:
+    #        boundary_edges.append(edge3)
+    #
+
+    boundary_edges = get_boundary_edges(faces)
 
     print(f'Level set {i} has {boundary_edges.shape[0]} edges')
 
