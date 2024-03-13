@@ -1,5 +1,6 @@
 import numpy as np
-#import meshio
+
+# import meshio
 from scipy.sparse.linalg import eigsh
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
@@ -9,6 +10,7 @@ from scipy.sparse.linalg import eigsh
 import plotly.graph_objects as go
 
 from dfsio import readdfs, writedfs
+
 
 def laplace_beltrami(mesh):
     vertices = mesh.vertices
@@ -36,7 +38,7 @@ def laplace_beltrami(mesh):
 
 
 def get_edges(faces):
-    """ Get the edges of a mesh given its faces
+    """Get the edges of a mesh given its faces
     Args:
         faces: list of faces of the mesh
     Returns:
@@ -50,16 +52,15 @@ def get_edges(faces):
         edges.append((j, k))
         edges.append((k, i))
 
-
     edges = np.array(edges)
     edges = np.sort(edges, axis=1)
-    #edges = np.unique(edges, axis=0)
+    # edges = np.unique(edges, axis=0)
 
     return edges
 
 
 def get_boundary_edges(faces):
-    """ Get the boundary edges of a mesh given its faces
+    """Get the boundary edges of a mesh given its faces
     Args:
         faces: list of faces of the mesh
     Returns:
@@ -68,25 +69,20 @@ def get_boundary_edges(faces):
 
     if len(faces) == 0:
         return np.array([])
-    
-    edges = get_edges(faces)
-    
-    # find edges that are only present once in the list
 
-    unique_edges, edge_counts = np.unique(edges,axis=0,return_counts=True)
+    edges = get_edges(faces)
+
+    unique_edges, edge_counts = np.unique(edges, axis=0, return_counts=True)
 
     boundary_edges = unique_edges[edge_counts == 1]
-    #edge_counts = np.bincount(edges.flatten())
-
-
-    #boundary_edges = edges[edge_counts == 1]
 
     return boundary_edges
 
 
 # Read mesh file
-mesh = readdfs("/home/ajoshi/Desktop/tube.dfs")
-#meshio.read("mesh_file.obj")
+mesh = readdfs(
+    "/deneb_disk/for_akash/diametercalculationforaorta/aeorta_r2.dfs"
+)   #"/home/ajoshi/Desktop/tube.dfs")
 
 boundary_edges = get_boundary_edges(mesh.faces)
 
@@ -94,28 +90,33 @@ boundary_edges = get_boundary_edges(mesh.faces)
 L = laplace_beltrami(mesh)
 
 # Compute eigenvectors and eigenvalues
-num_eigenvectors = 10  # Number of eigenvectors to compute
-eigenvalues, eigenvectors = eigsh(L, k=num_eigenvectors, which='SM',maxiter=100000)
+num_eigenvectors = 3  # Number of eigenvectors to compute
+eigenvalues, eigenvectors = eigsh(L, k=num_eigenvectors, which="SM")#, maxiter=1000)
 
 # Plot the first eigenvector
 first_eigenvector = eigenvectors[:, 1]  # Extracting the first eigenvector
 
 
-
-
 # Calculate magnitude of the first eigenvector
-magnitude = first_eigenvector #np.linalg.norm(first_eigenvector, axis=1)
+magnitude = first_eigenvector  # np.linalg.norm(first_eigenvector, axis=1)
 
 
 fig = plt.figure(figsize=plt.figaspect(0.5))
-ax = fig.add_subplot(111, projection='3d')
-ax.plot_trisurf(mesh.vertices[:, 0], mesh.vertices[:, 1], mesh.vertices[:, 2], triangles=mesh.faces, cmap='viridis', alpha=0.5)
+ax = fig.add_subplot(111, projection="3d")
+ax.plot_trisurf(
+    mesh.vertices[:, 0],
+    mesh.vertices[:, 1],
+    mesh.vertices[:, 2],
+    triangles=mesh.faces,
+    cmap="viridis",
+    alpha=0.5,
+)
 
 
 for i, c in enumerate(np.linspace(np.min(magnitude), np.max(magnitude), 10)):
 
     # delete the faces with magnitude less than c
-    face_mag = np.max(magnitude[mesh.faces],axis=1)
+    face_mag = np.max(magnitude[mesh.faces], axis=1)
     faces = mesh.faces[face_mag > c, :]
     vertices = mesh.vertices.copy()
     # delete the vertices that are not in the faces
@@ -123,70 +124,51 @@ for i, c in enumerate(np.linspace(np.min(magnitude), np.max(magnitude), 10)):
     vertices = vertices[ind, :]
     magnitude_patch = magnitude[ind]
 
-
     # reassign the indices
     for j in range(0, len(ind)):
         faces[faces == ind[j]] = j
-    # write the new dfs file
-    class newmesh:
-        pass
-    newmesh.faces = faces
-    newmesh.vertices = vertices
-    writedfs(f'/home/ajoshi/Desktop/tube_{i}.dfs', newmesh)
-
-
-    # find the boundary edges
-    #boundary_edges = []
-    #for f in faces:
-    #    edge1 = f[[0,1]]
-    #    edge2 = f[[1,2]]
-    #    edge3 = f[[2,0]]
-    #    
-    #    if sum(magnitude_patch[edge1]>c) == 1:
-    #        boundary_edges.append(edge1)
-    #    if sum(magnitude_patch[edge2]>c) == 1:
-    #        boundary_edges.append(edge2)
-    #    if sum(magnitude_patch[edge3]>c) == 1:
-    #        boundary_edges.append(edge3)
-    #
 
     boundary_edges = get_boundary_edges(faces)
-
-    print(f'Level set {i} has {boundary_edges.shape[0]} edges')
 
     if len(boundary_edges) == 0:
         continue
 
-    #ax.plot3D(vertices[boundary_edges[:,0], 0], vertices[boundary_edges[:,0], 1], vertices[boundary_edges[:,0], 2], 'r')
     for e in range(boundary_edges.shape[0]):
-        ax.plot3D(vertices[boundary_edges[e], 0], vertices[boundary_edges[e], 1], vertices[boundary_edges[e], 2], 'r')
-
-    #plt.title(f'Level set {i}')
-    #plt.gca().set_aspect('equal')
-    #plt.show()
+        ax.plot3D(
+            vertices[boundary_edges[e], 0],
+            vertices[boundary_edges[e], 1],
+            vertices[boundary_edges[e], 2],
+            "r",
+        )
 
     # Use PCA to project the 3D coordinates of the boundary edges to 2D
     from sklearn.decomposition import PCA
+
     pca = PCA(n_components=2)
     pca.fit(vertices[boundary_edges.flatten(), :])
-    vertices_2d = pca.transform(vertices) #.reshape(-1, 2)
+    vertices_2d = pca.transform(vertices)
     vertices_3d = pca.inverse_transform(vertices_2d)
-    # Plot the 2D projection of the boundary
-    #plt.figure()
-    #ax = fig.add_subplot(111, projection='3d')
-    #ax.plot_trisurf(vertices[:, 0], vertices[:, 1], vertices[:, 2], triangles=faces, cmap='viridis', alpha=0.5)
     for e in range(boundary_edges.shape[0]):
-        ax.plot3D(vertices_3d[boundary_edges[e], 0], vertices_3d[boundary_edges[e], 1], vertices_3d[boundary_edges[e], 2], 'g')
+        ax.plot3D(
+            vertices_3d[boundary_edges[e], 0],
+            vertices_3d[boundary_edges[e], 1],
+            vertices_3d[boundary_edges[e], 2],
+            "g",
+        )
 
-    #plt.title(f'Level set {i}')
-    #plt.gca().set_aspect('equal')
-    #plt.show()
+    # calculate circumference of the level set
+    circumference = 0
+    for e in range(boundary_edges.shape[0]):
+        circumference += np.linalg.norm(
+            vertices_3d[boundary_edges[e, 0], :] - vertices_3d[boundary_edges[e, 1], :]
+        )
 
-    #ax.plot3D(vertices[boundary_edges[:,1], 0], vertices[boundary_edges[:,1], 1], vertices[boundary_edges[:,1], 2], 'r')
-ax.set_xlabel('X')
-ax.set_ylabel('Y')
-ax.set_zlabel('Z')
-plt.title(f'Level set {i}')
-plt.gca().set_aspect('equal')
+    print(f"Level set {i} has a circumference of {circumference}")
+
+
+ax.set_xlabel("X")
+ax.set_ylabel("Y")
+ax.set_zlabel("Z")
+plt.title(f"Level sets of 1st eigenvector of Laplace Beltrami operator")
+plt.gca().set_aspect("equal")
 plt.show()
-
