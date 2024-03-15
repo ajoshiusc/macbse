@@ -10,7 +10,7 @@ import SimpleITK as sitk
 
 # Define paths
 bse_model = "/home/ajoshi/macbse_aug_model_2024-03-07_23-05-42_epoch_8000.pth" #"models/bias_field_correction_model_2024-03-02_22-29-46_epoch_9000.pth"
-bse_model = "/home/ajoshi/macbse_aug_model_2024-03-12_20-56-10_epoch_500.pth" #macbse_aug_model_2024-03-08_10-46-25_epoch_16500.pth" #"models/bias_field_correction_model_2024-03-02_22-29-46_epoch_9000.pth"
+bse_model = "/home/ajoshi/macbse_aug_model_2024-03-14_16-16-03_epoch_1000.pth" #macbse_aug_model_2024-03-08_10-46-25_epoch_16500.pth" #"models/bias_field_correction_model_2024-03-02_22-29-46_epoch_9000.pth"
 #bse_model = "/home/ajoshi/macbse_aug_model_2024-03-13_14-16-46_epoch_20000.pth"
 
 #prefix = "/home/ajoshi/Downloads/temp/ONPRC18_LargeFOV_T1W_head"
