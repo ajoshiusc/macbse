@@ -274,11 +274,11 @@ for epoch in range(num_epochs):
         formatted_datetime = current_datetime.strftime("%Y-%m-%d_%H-%M-%S")
 
         # Create a filename with the formatted date and time
-        filename = f"models/macbse_aug_model_{formatted_datetime}_epoch_{epoch}.pth"
+        filename = f"models/macbse_{VOXSIZE}_aug_model_{formatted_datetime}_epoch_{epoch}.pth"
 
         # Save the trained model
         torch.save(model.state_dict(), filename)
-        filename = f"models/macbse_aug_loss_{formatted_datetime}_epoch_{epoch}.npz"
+        filename = f"models/macbse_{VOXSIZE}_aug_loss_{formatted_datetime}_epoch_{epoch}.npz"
 
         np.savez(
             filename, val_loss_epoch=val_loss_epoch, train_loss_epoch=train_loss_epoch
