@@ -109,6 +109,8 @@ print("num validation files:", len(val_files))
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
+#device = "cpu"
+
 keys = ["image", "mask"]
 
 train_transforms = Compose(
@@ -211,7 +213,7 @@ model = UNet(
     spatial_dims=spatial_dims,
     in_channels=1,  # Adjust based on your data
     out_channels=1,  # Adjust based on your data
-    channels= (16, 64, 64, 128, 256), #(2, 8, 8, 16, 32), #(16, 64, 64, 128, 256),
+    channels= (2, 8, 8, 16, 32), #(16, 64, 64, 128, 256), ##(16, 64, 64, 128, 256),
     strides=strides,
 ).to(device)
 
