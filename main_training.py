@@ -42,6 +42,7 @@ from monai.transforms import (
 set_determinism(seed=0)
 
 
+VOX_SIZE = 96
 # Define your dataset and data loader
 class BSEDataset(Dataset):
     def __init__(self, image_files, mask_files, transform=None):
@@ -117,7 +118,7 @@ train_transforms = Compose(
         ScaleIntensityd(keys="image", minv=0.0, maxv=255.0),
         Resized(
             keys,
-            spatial_size=(64, 64, 64),
+            spatial_size=(VOX_SIZE, VOX_SIZE, VOX_SIZE),
             mode=("trilinear","nearest"),
         ),
         RandAffined(
@@ -151,7 +152,7 @@ val_transforms = Compose(
         ScaleIntensityd(keys="image", minv=0.0, maxv=255.0),
         Resized(
             keys,
-            spatial_size=(64, 64, 64),
+            spatial_size=(VOX_SIZE, VOX_SIZE, VOX_SIZE),
             mode="trilinear",
         ),
         #HistogramNormalizeD(keys="image", num_bins=255),
@@ -199,7 +200,7 @@ strides = (1, 1, 1, 1)
 
 """
 model = SwinUNETR(
-    img_size=(64, 64, 64),
+    img_size=(VOX_SIZE, VOX_SIZE, VOX_SIZE),
     in_channels=1,
     out_channels=1,
     feature_size=48,
@@ -273,11 +274,11 @@ for epoch in range(num_epochs):
         formatted_datetime = current_datetime.strftime("%Y-%m-%d_%H-%M-%S")
 
         # Create a filename with the formatted date and time
-        filename = f"models/macbse_aug_model_{formatted_datetime}_epoch_{epoch}.pth"
+        filename = f"models/macbse_aug_model_{VOX_SIZE}_{formatted_datetime}_epoch_{epoch}.pth"
 
         # Save the trained model
         torch.save(model.state_dict(), filename)
-        filename = f"models/macbse_aug_loss_{formatted_datetime}_epoch_{epoch}.npz"
+        filename = f"models/macbse_aug_loss_{VOX_SIZE}_{formatted_datetime}_epoch_{epoch}.npz"
 
         np.savez(
             filename, val_loss_epoch=val_loss_epoch, train_loss_epoch=train_loss_epoch
