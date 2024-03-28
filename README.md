@@ -16,7 +16,7 @@ This script leverages a deep learning model (UNet) to extract the skull from a g
 **Usage:**
 
 ```bash
-python main.py -i <input_image> -m <model_file> -o <output_image> [--mask <mask_image>] [--device cpu|cuda]
+python macbse.py -i <input_image> -m <model_file> -o <output_image> [--mask <mask_image>] [--device cpu|cuda]
 ```
 
 **Arguments:**
@@ -30,7 +30,7 @@ python main.py -i <input_image> -m <model_file> -o <output_image> [--mask <mask_
 **Example:**
 
 ```bash
-python main.py -i input.nii.gz -m model.pth -o skull.nii.gz --mask mask.nii.gz --device cpu
+python macbse.py -i input.nii.gz -m model.pth -o skull.nii.gz --mask mask.nii.gz --device cpu
 ```
 
 
