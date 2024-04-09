@@ -1,8 +1,8 @@
-## Skull Extraction Tool for Macaque (MACBSE)
+## Brain Extraction Tool for Macaque (MACBSE)
 
 **Description:**
 
-This script leverages a deep learning model (UNet) to extract the skull from a given magnetic resonance imaging (MRI) image. 
+This script leverages a deep learning model (UNet) to extract the brain from a given magnetic resonance imaging (MRI) image. 
 
 **Requirements:**
 
@@ -16,21 +16,21 @@ This script leverages a deep learning model (UNet) to extract the skull from a g
 **Usage:**
 
 ```bash
-python main.py -i <input_image> -m <model_file> -o <output_image> [--mask <mask_image>] [--device cpu|cuda]
+python macbse.py -i <input_image> -m <model_file> -o <output_image> [--mask <mask_image>] [--device cpu|cuda]
 ```
 
 **Arguments:**
 
 * -i, --input: Path to the input MRI image file. (Required)
 * -m, --model: Path to the trained UNet model file (.pth). (Required)
-* -o, --output: Path to save the extracted skull image. (Required)
-* --mask: (Optional) Path to save the predicted skull mask image.
+* -o, --output: Path to save the brain extracted image. (Required)
+* --mask: (Optional) Path to save the predicted brain mask image.
 * --device: Device to use for computation, either "cpu" or "cuda" (defaults to "cuda" if available).
 
 **Example:**
 
 ```bash
-python main.py -i input.nii.gz -m model.pth -o skull.nii.gz --mask mask.nii.gz --device cpu
+python macbse.py -i input.nii.gz -m model.pth -o input.bse.nii.gz --mask mask.nii.gz --device cpu
 ```
 
 
