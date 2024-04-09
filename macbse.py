@@ -31,7 +31,7 @@ import matplotlib.pyplot as plt
 from numpy.polynomial.legendre import Legendre
 
 
-VOXSIZE = 128 #128
+VOXSIZE = 64 #128
 
 def macbse(
     input_filename, output_filename, model_filename, mask_filename, device="cpu"
@@ -41,7 +41,7 @@ def macbse(
     spatial_dims = 3
     strides = (1, 1, 1, 1)
 
-    channels = (2, 8, 8, 16, 32) #(16, 64, 64, 128, 256);#(2, 8, 8, 16, 32) #(16, 64, 64, 128, 256) #(2, 8, 8, 16, 32)
+    channels = (16, 64, 64, 128, 256);#(2, 8, 8, 16, 32) #(16, 64, 64, 128, 256) #(2, 8, 8, 16, 32)
     #  #tuple(map(int, last_subdirectory.split('_')[1][1:-1].split(',')))
 
     model = UNet(

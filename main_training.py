@@ -42,7 +42,7 @@ from monai.transforms import (
 set_determinism(seed=0)
 
 
-VOX_SIZE = 96
+VOX_SIZE = 64
 # Define your dataset and data loader
 class BSEDataset(Dataset):
     def __init__(self, image_files, mask_files, transform=None):
@@ -207,11 +207,13 @@ model = SwinUNETR(
     use_checkpoint=True,
 ).to(device)
 """
+channels = (16, 64, 64, 128, 256) #(2, 8, 8, 16, 32),
+
 model = UNet(
     spatial_dims=spatial_dims,
     in_channels=1,  # Adjust based on your data
     out_channels=1,  # Adjust based on your data
-    channels= (16, 64, 64, 128, 256), #(2, 8, 8, 16, 32), #(16, 64, 64, 128, 256),
+    channels= channels, #(2, 8, 8, 16, 32), #(16, 64, 64, 128, 256),
     strides=strides,
 ).to(device)
 

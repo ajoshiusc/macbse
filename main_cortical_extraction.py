@@ -12,7 +12,7 @@ import SimpleITK as sitk
 bse_model = "/home/ajoshi/macbse_aug_model_2024-03-07_23-05-42_epoch_8000.pth" #"models/bias_field_correction_model_2024-03-02_22-29-46_epoch_9000.pth"
 bse_model = "/home/ajoshi/macbse_aug_model_2024-03-14_16-16-03_epoch_1000.pth" #macbse_aug_model_2024-03-08_10-46-25_epoch_16500.pth" #"models/bias_field_correction_model_2024-03-02_22-29-46_epoch_9000.pth"
 bse_model = "/home/ajoshi/macbse_aug_model_2024-03-15_08-25-11_epoch_5000.pth"
-bse_model = "/home/ajoshi/macbse_128_aug_model_2024-03-18_09-41-00_epoch_2500.pth"
+#bse_model = "/home/ajoshi/macbse_128_aug_model_2024-03-18_09-41-00_epoch_2500.pth"
 #prefix = "/home/ajoshi/Downloads/temp/ONPRC18_LargeFOV_T1W_head"
 prefix = "data/sub-032196_ses-001_run-1_T1w"
 #"/deneb_disk/macaque_atlas_data/site-uwmadison_part1/sub-1002/anat/sub-1002_T1w" #
